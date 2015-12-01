@@ -73,3 +73,21 @@ def decision_tree(dt, ingreds):
 		else:
 			dt = dt[1]
 	return dt[0]
+	
+def classify():
+	with open('trainSnip.json') as data_file:
+		trainData = json.load(data_file)
+
+	with open('test.json') as data_file:
+		testData = json.load(data_file)
+	
+	#dTree = build_tree(trainData)
+	
+	f = open("submission.csv", "w")
+	for i in range(len(testData)):
+		id = testData[i]['id']
+		ingrs = testData[i]['ingredients']
+		#cuisine = decision_tree(dTree, ingrs)
+		cuisine = 'italian'
+		f.write("%d,%s\n" % (id,cuisine))
+	f.close()
