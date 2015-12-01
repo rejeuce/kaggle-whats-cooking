@@ -92,7 +92,7 @@ def Gini(partition, ingredient):
     noSubtractTotal = noSubtractTotal + (float(noCuisineCount[noCuisine])/noCount)**2
   noIndex = noCount/float(partitionTotal) * (1 - noSubtractTotal)
   giniIndex = yesIndex + noIndex
-  #pprint(str(ingredient) + " " + str(giniIndex))
+  pprint(str(ingredient) + " " + str(giniIndex))
   return giniIndex;
 
 #find lowest gini index
