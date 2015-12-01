@@ -1,14 +1,9 @@
 import json
+import math
 from pprint import pprint
 
 with open('trainSnip.json') as data_file:
     data = json.load(data_file)
-	
-testTree = {}
-testTree[0] = 'salt'
-testTree[1] = 'no salty dog'
-testTree[2] = 'salty dog'
-
 
 def split_data(data, x):
 	leftData = []
@@ -19,15 +14,56 @@ def split_data(data, x):
 		else:
 			leftData.append(data[i])
 	return (leftData, rightData)
+	
+def info(arr):
+	NumRecipes = 0.0			
+	for i in range(len(arr)):
+		NumRecipes = NumRecipes + arr[i]
+	sum = 0.0
+	for i in range(len(arr)):
+		if arr[i] == 0.0:
+			continue
+		else:
+			sum = sum + ( arr[i]/NumRecipes)* (1.0/math.log10(2.0)) * math.log10(arr[i]/NumRecipes)
+	return -1.0 * sum
+
+def entropy(ingredient, mapOfCuisIngred, mapOfCuis):
+	NumRecipes = 0.0
+	for x in mapOfCuis:
+		NumRecipes = NumRecipes + mapOfCuis[x]
+	NumWIngr = 0.0
+	for x in mapOfCuisIngred:
+		if ingredient in mapOfCuisIngred[x]:
+			NumWIngr = NumWIngr + mapOfCuisIngred[x][ingredient]
+	
+	#create the arrays to pass to info that allows computation of information
+	a = []
+	b = []
+
+	for x in mapOfCuisIngred:
+		if ingredient in mapOfCuisIngred[x]:
+			a.append(mapOfCuisIngred[x][ingredient])
+	
+	for x in mapOfCuisIngred:
+		if ingredient in mapOfCuisIngred[x]:
+			b.append(mapOfCuis[x] - mapOfCuisIngred[x][ingredient])
+
+	Entr1 = 0
+	Entr2 = 0
+
+	Entr1 = (NumWIngr/NumRecipes)*info(a)
+	Entr2 = ((NumRecipes - NumWIngr) / NumRecipes)* info(b)
+
+	return Entr1 + Entr2
 
 def build_tree(data):
 	#if data is empty set cuisine then break
 	if len(data) == 0:
 		return None
 	
-	ccount, icount = parse_data(data)
+	cCount, iCount, iList = parse_data(data)
 	
-	value = info_gain(ccount, icount) # returns the largest info gain/entropy
+	value = info_gain(cCount, iCount, iList) # returns the largest info gain/entropy
 	left, right = split_data(data, value)
 	
 	tree = {}	# tree is represented with a dictionary of dictionaries
@@ -37,8 +73,11 @@ def build_tree(data):
 
 	return tree
 	
-def info_gain(ccount, icount):
-	return (None, None)
+def attr_select(cCount, iCount, iList):
+	entropies = {}
+	for a in iList:
+		entropies[a] = entropy(a, iCount, cCount)
+	return min(entropies, key=entropies.get)
 
 def parse_data(data):
 	cCounts = {}
