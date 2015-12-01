@@ -58,16 +58,20 @@ def entropy(ingredient, mapOfCuisIngred, mapOfCuis):
 
 def build_tree(data):
 	#if data is empty set cuisine then break
-	if len(data) == 0:
-		return None
+	#if len(data) == 0:
+	#	return None
 	
 	cCount, iCount, iList = parse_data(data)
 	
-	value = info_gain(cCount, iCount, iList) # returns the largest info gain/entropy
-	left, right = split_data(data, value)
+	attribute, entropy, cuisine = attr_select(cCount, iCount, iList) # returns the largest info gain/entropy
 	
 	tree = {}	# tree is represented with a dictionary of dictionaries
-	tree[0] = value
+	if entropy == 0.0:
+		tree[0] = cuisine
+		return tree
+	
+	left, right = split_data(data, attribute)
+	tree[0] = attribute
 	tree[1] = build_tree(left)
 	tree[2] = build_tree(right)
 
@@ -77,7 +81,9 @@ def attr_select(cCount, iCount, iList):
 	entropies = {}
 	for a in iList:
 		entropies[a] = entropy(a, iCount, cCount)
-	return min(entropies, key=entropies.get)
+	attr = min(entropies, key=entropies.get)
+	cuisine = cCount.items()[0]
+	return (attr,entropies[attr],cuisine)
 
 def parse_data(data):
 	cCounts = {}
