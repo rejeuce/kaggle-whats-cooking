@@ -6,7 +6,7 @@ with open('trainSnip.json') as data_file:
 	
 testTree = {}
 testTree[0] = 'salt'
-testTree[1] = 'salty dog'
+testTree[1] = 'no salty dog'
 testTree[2] = 'salty dog'
 
 
@@ -67,12 +67,13 @@ def parse_data(data):
 	return (cCounts, iCounts)
 	
 def decision_tree(dt, ingreds):
-	while len(dt) > 1:
-		if ingreds.has_key(dt[0]):
-			dt = dt[2]
+	if not isinstance(dt, dict):
+		return dt
+	else:
+		if dt[0] in ingreds:
+			return decision_tree(dt[2], ingreds)
 		else:
-			dt = dt[1]
-	return dt[0]
+			return decision_tree(dt[1], ingreds)
 	
 def classify():
 	with open('trainSnip.json') as data_file:
