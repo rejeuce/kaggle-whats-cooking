@@ -1,0 +1,59 @@
+[
+	{
+		"cuisine": "greek",
+		"ingredients": [ 
+			"a", 
+			"c"
+		]
+	},
+	{
+		"cuisine": "greek",
+		"ingredients": [ 
+			"b", 
+			"c"
+		]
+	},
+	{
+		"cuisine": "greek",
+		"ingredients": [ 
+			"b", 
+			"c"
+		]
+	},
+	{
+		"cuisine": "asian",
+		"ingredients": [
+			"a", 
+			"b"
+		]
+	},
+	{
+		"cuisine": "asian",
+		"ingredients": [
+			"a", 
+			"c"
+		]
+	},
+	{
+		"cuisine": "asian",
+		"ingredients": [
+			"a", 
+			"b"
+		]
+	},
+	{
+		"cuisine": "irish",
+		"ingredients": [
+			"a", 
+			"b"
+		]
+	},
+	{
+		"cuisine": "irish",
+		"ingredients": [
+			"a", 
+			"b", 
+			"c"
+		]
+	}
+]
