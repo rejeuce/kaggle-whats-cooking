@@ -32,16 +32,16 @@ def parse_data(data):
 	return (cCounts, iCounts)
 	
 def info(arr):
-        NumRecipes = 0			
-        for i in range(len(arr)):
-                NumRecipes = NumRecipes + arr[i]
-        sum = 0
-        for i in range(len(arr)):
-			if arr[i] == 0:
-				continue
-			else:
-				sum = sum + ( arr[i]/NumRecipes)* (1/math.log10(2)) * math.log10(arr[i]/NumRecipes)
-        return -1 * sum
+	NumRecipes = 0.0			
+	for i in range(len(arr)):
+		NumRecipes = NumRecipes + arr[i]
+	sum = 0.0
+	for i in range(len(arr)):
+		if arr[i] == 0.0:
+			continue
+		else:
+			sum = sum + ( arr[i]/NumRecipes)* (1.0/math.log10(2.0)) * math.log10(arr[i]/NumRecipes)
+	return -1.0 * sum
 
 def entropy(ingredient, mapOfCuisIngred, mapOfCuis):
 	NumRecipes = 0.0
@@ -71,3 +71,5 @@ def entropy(ingredient, mapOfCuisIngred, mapOfCuis):
 	Entr2 = ((NumRecipes - NumWIngr) / NumRecipes)* info(b)
 
 	return Entr1 + Entr2
+
+x,y = parse_data(data)
