@@ -63,17 +63,26 @@ def build_tree(data):
 	
 	cCount, iCount, iList = parse_data(data)
 	
-	attribute, entropy, cuisine = attr_select(cCount, iCount, iList) # returns the largest info gain/entropy
+	attribute, entropy = attr_select(cCount, iCount, iList) # returns the largest info gain/entropy
 	
 	tree = {}	# tree is represented with a dictionary of dictionaries
-	if entropy == 0.0:
-		tree[0] = cuisine
-		return tree
-	
 	left, right = split_data(data, attribute)
-	tree[0] = attribute
-	tree[1] = build_tree(left)
-	tree[2] = build_tree(right)
+	
+	# Break case 0 entropy
+	if entropy == 0.0:
+		tree[0] = attribute
+		a,b,c = parse_data(right)
+		if len(a) == 1:
+			tree[1] = build_tree(left)
+			tree[2] = a.keys[0]
+		else:
+			a,b,c = parse_data(left)
+			tree[1] = a.keys[0]
+			tree[2] = build_tree(right)
+	else:
+		tree[0] = attribute
+		tree[1] = build_tree(left)
+		tree[2] = build_tree(right)
 
 	return tree
 	
@@ -82,8 +91,11 @@ def attr_select(cCount, iCount, iList):
 	for a in iList:
 		entropies[a] = entropy(a, iCount, cCount)
 	attr = min(entropies, key=entropies.get)
-	cuisine = cCount.items()[0]
-	return (attr,entropies[attr],cuisine)
+	
+	print attr
+	pprint(entropies)
+	
+	return (attr,entropies[attr])
 
 def parse_data(data):
 	cCounts = {}
@@ -138,3 +150,5 @@ def classify():
 		cuisine = 'italian'
 		f.write("%d,%s\n" % (id,cuisine))
 	f.close()
+	
+x,y,z = parse_data(data)
