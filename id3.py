@@ -43,10 +43,11 @@ def info_gain(ccount, icount):
 def parse_data(data):
 	cCounts = {}
 	iCounts = {}
+	ingrList = []
 	for i in range(len(data)):
 		cuisineType = data[i]['cuisine']
 		ingredients = data[i]['ingredients']
-		
+		ingrList = ingrList + ingredients
 		if cCounts.has_key(data[i]['cuisine']):
 			cCounts[data[i]['cuisine']] = cCounts[data[i]['cuisine']] + 1
 		else:
@@ -64,7 +65,7 @@ def parse_data(data):
 			for j in range(len(ingredients)):
 				iCounts[cuisineType][ingredients[j]] = 1
 				
-	return (cCounts, iCounts)
+	return (cCounts, iCounts, ingrList)
 	
 def decision_tree(dt, ingreds):
 	if not isinstance(dt, dict):
