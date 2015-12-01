@@ -99,7 +99,7 @@ def Gini(partition, ingredient):
 giniIngredient = {} #dictionary of ingredients and their corresponding gini index
 for ingredient in ingredients:
   giniIngredient[ingredient] = Gini(partition, ingredient)
-pprint(min(giniIngredient, giniIngredient.key))
+pprint(min(giniIngredient, key=giniIngredient.get))
 
 #Tests
 #pprint(Partition("cooking cream", partition)) #test for partition function

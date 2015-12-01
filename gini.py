@@ -96,10 +96,10 @@ def Gini(partition, ingredient):
   return giniIndex;
 
 #find lowest gini index
-giniIngredient = {} #dictionary of ingredients and their corresponding gini index
-for ingredient in ingredients:
-  giniIngredient[ingredient] = Gini(partition, ingredient)
-pprint(min(giniIngredient, giniIngredient.key))
+#giniIngredient = {} #dictionary of ingredients and their corresponding gini index
+#for ingredient in ingredients:
+#  giniIngredient[ingredient] = Gini(partition, ingredient)
+#pprint(min(giniIngredient, key=giniIngredient.get))
 
 #Tests
 #pprint(Partition("cooking cream", partition)) #test for partition function
