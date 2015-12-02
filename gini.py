@@ -1,30 +1,45 @@
 import json
+import csv
 from pprint import pprint
-
-cuisines = []
-ingredients = []
-partition = []
-
-with open('train.json') as data_file:    
+with open('trainSnip.json') as data_file:    
     data = json.load(data_file)
 
-for recipe in data:
-  cuisines.append(recipe["cuisine"])
-  for ingredient in recipe["ingredients"]:
-    ingredients.append(ingredient)
+with open('test.json') as data_file:    
+    testData = json.load(data_file)
 
-#creates a list of unique cuisines and ingredients
-cuisines = list(set(cuisines))
-ingredients = list(set(ingredients))
+partition = []
 #copies data to partition, will use this partition during gini calculation
 partition.extend(data);
 
-#partition function
-def Partition(e_ingredient, source):
+def GetCuisines(partition):
+  cuisines = []
+  for recipe in partition:
+    cuisines.append(recipe["cuisine"])
+  cuisines = list(set(cuisines))
+  return cuisines;
+
+def GetIngredients(partition):
+  ingredients = []
+  for recipe in partition:
+    for ingredient in recipe["ingredients"]:
+      ingredients.append(ingredient)
+  ingredients = list(set(ingredients))
+  return ingredients;
+
+#yes partition function
+def YesPartition(e_ingredient, source):
   "takes an ingredient, produces a partition that includes all those ingredients from the source partition"
   newPartition = []
   for recipe in source:
     if any(e_ingredient in ingredients for ingredients in recipe["ingredients"]):
+      newPartition.append(recipe)
+  return newPartition;
+#no partition function
+def NoPartition(e_ingredient, source):
+  "takes an ingredient, produces a partition that do not include all the ingredient from the source partition"
+  newPartition = []
+  for recipe in source:
+    if not any(e_ingredient in ingredients for ingredients in recipe["ingredients"]):
       newPartition.append(recipe)
   return newPartition;
 
@@ -43,22 +58,18 @@ class TreeNode:
     return self.yes
   def GetNo(self):
     return self.no
-
-#tree maintenance
-class DecisionTree:
-  "root only this is needed because we only care about whether or not an ingredient in included in a recipe, use node yes or no for traversal"
-  root = 0 #initialize root to empty
-  def __init__(self, node):
-    root = node
-  def SetRoot(self, node):
-    root = node
-  def GetRoot(self):
-    return root
+  def GetContent(self):
+    return self.content
 
 #GiniFunction
 def Gini(partition, ingredient):
   "takes a partition and an ingredient, and provides the gini index of that ingredient"
   partitionTotal = len(partition)
+  cuisines = GetCuisines(partition)
+  yeses = []
+  for recipe in partition:
+    if ingredient in recipe["ingredients"]:
+      yeses.extend(recipe)
   yeses = [recipe for recipe in partition if ingredient in recipe["ingredients"]] #find recipes with ingredient
   yesCount = len(yeses) #count how many recipes in the partition contain matching | yescount
   nos = [recipe for recipe in partition if ingredient not in recipe["ingredients"]] #find recipes without ingredient
@@ -95,11 +106,56 @@ def Gini(partition, ingredient):
   #pprint(str(ingredient) + " " + str(giniIndex))
   return giniIndex;
 
+#traverse the tree, given recipe, return the cuisine
+def FindCuisine(subTree, recipe):
+  if subTree.yes == 0 and subTree.no == 0: #base case: if arrived at leaf, return leaf value
+    return subTree.content;
+  #test to see if traverse right or left
+  if subTree.content in recipe["ingredients"]:
+    return FindCuisine(subTree.yes, recipe)
+  return FindCuisine(subTree.no, recipe)
+
 #find lowest gini index
-#giniIngredient = {} #dictionary of ingredients and their corresponding gini index
-#for ingredient in ingredients:
-#  giniIngredient[ingredient] = Gini(partition, ingredient)
-#pprint(min(giniIngredient, key=giniIngredient.get))
+def TreeBuilder(partition, treeNode):
+  "use partition for gini index, use treeNode to set next node. Call treeNode by treeNode->Yes or treeNode->No"
+  #basecase: when all recipes in partition have the same cuisine, add cuisine to the tree and return
+  cuisines = GetCuisines(partition)
+  if len(cuisines) < 2:
+    treeNode = TreeNode(cuisines[0])
+    #print(treeNode.content)
+    return treeNode; #what should be returned?
+  ingredients = GetIngredients(partition)
+  giniIngredient = {} #dictionary of ingredients and their corresponding gini index
+  for ingredient in ingredients:
+    giniIngredient[ingredient] = Gini(partition, ingredient)
+  selectCuisine = min(giniIngredient, key=giniIngredient.get)
+  
+  #add to the tree
+  treeNode = TreeNode(selectCuisine)
+  #print(treeNode.content)
+  
+  #partition then call gini again
+  yesPartition = YesPartition(selectCuisine, partition) #partition that follows yes path
+  treeNode.yes = TreeBuilder(yesPartition, treeNode.yes)
+  #print(treeNode.yes.content)
+  noPartition = NoPartition(selectCuisine, partition) #partition that follows no path
+  treeNode.no = TreeBuilder(noPartition, treeNode.no)
+  #print(treeNode.no.content)
+  return treeNode;
+
+#tree = DecisionTree(0) #create empty tree
+tree = TreeBuilder(partition, TreeNode(0)) #build tree
+
+print(FindCuisine(tree, partition[0]))
+
+#csv builder, for each recipe, call tree traversal
+resultDict = {}
+for recipe in testData:
+  resultDict[recipe["id"]] = FindCuisine(tree, recipe)
+writer = csv.writer(open('result.csv', 'wb'))
+for key, value in resultDict.items():
+   writer.writerow([key, value])
+
 
 #Tests
 #pprint(Partition("cooking cream", partition)) #test for partition function
