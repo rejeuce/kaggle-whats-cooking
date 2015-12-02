@@ -135,7 +135,7 @@ def prune_data(data, iCount, iList):
 
 	pruneList = []
 	for i in totals:
-		if totals[i] < 10:
+		if totals[i] < 5gi:
 			pruneList.append(i)
 
 	for i in range(len(data)):
@@ -150,8 +150,8 @@ def classify(train, test, out):
 	with open(test) as data_file:
 		testData = json.load(data_file)
 		
-#	x,y,z = parse_data(trainData)
-#	prune_data(trainData, y, z)
+	x,y,z = parse_data(trainData)
+	prune_data(trainData, y, z)
 	
 	dTree = build_tree(trainData)
 	
@@ -169,8 +169,23 @@ def test():
 
 #with open('trainSnip.json') as data_file:
 #    data = json.load(data_file)
-#with open('train.json') as data_file:
-#	data = json.load(data_file)
-#x,y,z = parse_data(data)
+with open('train.json') as data_file:
+	data = json.load(data_file)
+x,y,z = parse_data(data)
+iCount = y
+iList = z
+totals = {}
+for ingr in iList:
+	count = 0
+	for cuisine in iCount:
+		if iCount[cuisine].has_key(ingr):
+			count = count + iCount[cuisine][ingr]
+	
+	totals[ingr] = count
 
+pprint(totals)
+
+import sys
+sys.setrecursionlimit(2000)
+#classify('train80k.json', 'test.json', 'out80k.csv')
 		
