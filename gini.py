@@ -1,7 +1,7 @@
 import json
 import csv
 from pprint import pprint
-with open('trainSnip.json') as data_file:    
+with open('train.json') as data_file:    
     data = json.load(data_file)
 
 with open('test.json') as data_file:    

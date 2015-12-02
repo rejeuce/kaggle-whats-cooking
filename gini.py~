@@ -1,7 +1,7 @@
 import json
 import csv
 from pprint import pprint
-with open('trainSnip.json') as data_file:    
+with open('train.json') as data_file:    
     data = json.load(data_file)
 
 with open('test.json') as data_file:    
@@ -153,7 +153,7 @@ resultDict = {}
 for recipe in testData:
   resultDict[recipe["id"]] = FindCuisine(tree, recipe)
 writer = csv.writer(open('result.csv', 'wb'))
-for key, value in mydict.items():
+for key, value in resultDict.items():
    writer.writerow([key, value])
 
 
