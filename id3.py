@@ -112,7 +112,7 @@ def parse_data(data):
 			for j in range(len(ingredients)):
 				iCounts[cuisineType][ingredients[j]] = 1
 				
-	return (cCounts, iCounts, ingrList)
+	return (cCounts, iCounts, set(ingrList))
 	
 def decision_tree(dt, ingreds):
 	if not isinstance(dt, dict):
@@ -146,6 +146,21 @@ def test():
 
 #with open('trainSnip.json') as data_file:
 #    snipData = json.load(data_file)
-#with open('train.json') as data_file:
-#	trainData = json.load(data_file)
-#x,y,z = parse_data(trainData)
+with open('train.json') as data_file:
+	trainData = json.load(data_file)
+x,y,z = parse_data(trainData)
+
+totals = {}
+for ingr in z:
+	count = 0
+	for cuisine in y:
+		if y[cuisine].has_key(ingr):
+			count = count + y[cuisine][ingr]
+	
+	totals[ingr] = count
+
+newz = set(z)
+for i in totals:
+	if totals[i] == 1:
+		newz.discard(i)
+		
