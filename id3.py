@@ -169,21 +169,21 @@ def test():
 
 #with open('trainSnip.json') as data_file:
 #    data = json.load(data_file)
-with open('train.json') as data_file:
-	data = json.load(data_file)
-x,y,z = parse_data(data)
-iCount = y
-iList = z
-totals = {}
-for ingr in iList:
-	count = 0
-	for cuisine in iCount:
-		if iCount[cuisine].has_key(ingr):
-			count = count + iCount[cuisine][ingr]
+# with open('train.json') as data_file:
+	# data = json.load(data_file)
+# x,y,z = parse_data(data)
+# iCount = y
+# iList = z
+# totals = {}
+# for ingr in iList:
+	# count = 0
+	# for cuisine in iCount:
+		# if iCount[cuisine].has_key(ingr):
+			# count = count + iCount[cuisine][ingr]
 	
-	totals[ingr] = count
+	# totals[ingr] = count
 
-pprint(totals)
+# pprint(totals)
 
 import sys
 sys.setrecursionlimit(2000)
