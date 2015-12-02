@@ -135,7 +135,7 @@ def prune_data(data, iCount, iList):
 
 	pruneList = []
 	for i in totals:
-		if totals[i] < 5gi:
+		if totals[i] < 5:
 			pruneList.append(i)
 
 	for i in range(len(data)):
@@ -187,5 +187,5 @@ pprint(totals)
 
 import sys
 sys.setrecursionlimit(2000)
-#classify('train80k.json', 'test.json', 'out80k.csv')
+classify('train80k.json', 'test.json', 'out80k.csv')
 		
