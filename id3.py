@@ -122,6 +122,26 @@ def decision_tree(dt, ingreds):
 			return decision_tree(dt[2], ingreds)
 		else:
 			return decision_tree(dt[1], ingreds)
+			
+def prune_data(data, iCount, iList):
+	totals = {}
+	for ingr in iList:
+		count = 0
+		for cuisine in iCount:
+			if iCount[cuisine].has_key(ingr):
+				count = count + iCount[cuisine][ingr]
+		
+		totals[ingr] = count
+
+	pruneList = []
+	for i in totals:
+		if totals[i] < 10:
+			pruneList.append(i)
+
+	for i in range(len(data)):
+		for ingr in pruneList:
+			if ingr in data[i]['ingredients']:
+				data[i]['ingredients'].remove(ingr)
 	
 def classify(train, test, out):
 	with open(train) as data_file:
@@ -129,6 +149,9 @@ def classify(train, test, out):
 
 	with open(test) as data_file:
 		testData = json.load(data_file)
+		
+#	x,y,z = parse_data(trainData)
+#	prune_data(trainData, y, z)
 	
 	dTree = build_tree(trainData)
 	
@@ -142,25 +165,12 @@ def classify(train, test, out):
 	f.close()
 
 def test():
-	classify('trainSnip.json', 'test.json', 'out.csv')
+	classify('train20k.json', 'test.json', 'out20kkk.csv')
 
 #with open('trainSnip.json') as data_file:
-#    snipData = json.load(data_file)
-with open('train.json') as data_file:
-	trainData = json.load(data_file)
-x,y,z = parse_data(trainData)
+#    data = json.load(data_file)
+#with open('train.json') as data_file:
+#	data = json.load(data_file)
+#x,y,z = parse_data(data)
 
-totals = {}
-for ingr in z:
-	count = 0
-	for cuisine in y:
-		if y[cuisine].has_key(ingr):
-			count = count + y[cuisine][ingr]
-	
-	totals[ingr] = count
-
-newz = set(z)
-for i in totals:
-	if totals[i] == 1:
-		newz.discard(i)
 		
