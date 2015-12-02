@@ -2,9 +2,6 @@ import json
 import math
 from pprint import pprint
 
-with open('trainSnip.json') as data_file:
-    data = json.load(data_file)
-
 def split_data(data, x):
 	leftData = []
 	rightData = []
@@ -126,7 +123,7 @@ def decision_tree(dt, ingreds):
 		else:
 			return decision_tree(dt[1], ingreds)
 	
-def classify(train, test):
+def classify(train, test, out):
 	with open(train) as data_file:
 		trainData = json.load(data_file)
 
@@ -135,7 +132,7 @@ def classify(train, test):
 	
 	dTree = build_tree(trainData)
 	
-	f = open("submission.csv", "w")
+	f = open(out, "w")
 	for i in range(len(testData)):
 		id = testData[i]['id']
 		ingrs = testData[i]['ingredients']
@@ -143,6 +140,12 @@ def classify(train, test):
 		#cuisine = 'italian'
 		f.write("%d,%s\n" % (id,cuisine))
 	f.close()
-	
-#x,y,z = parse_data(data)
-classify('trainSnip.json', 'test.json')
+
+def test():
+	classify('trainSnip.json', 'test.json', 'out.csv')
+
+#with open('trainSnip.json') as data_file:
+#    snipData = json.load(data_file)
+#with open('train.json') as data_file:
+#	trainData = json.load(data_file)
+#x,y,z = parse_data(trainData)
