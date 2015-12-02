@@ -187,5 +187,5 @@ def test():
 
 import sys
 sys.setrecursionlimit(2000)
-classify('train80k.json', 'test.json', 'out80k.csv')
+#classify('train80k.json', 'test.json', 'out80k.csv')
 		
