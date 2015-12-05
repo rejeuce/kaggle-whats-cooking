@@ -1,5 +1,6 @@
 import json
 from sklearn import svm
+from sklearn.svm import SVC
 
 def main(train):
 
@@ -34,8 +35,12 @@ def main(train):
 				I[i].append(0)
 
 	#insert values into SVM model
-	clf = svm.SVC()
-	clf.fit(I, C)
+	#clf = svm.SVC()
+	#clf.fit(I, C)
+
+	#instead, insert values into linear_SVM model
+	lin_clf = svm.LinearSVC()
+	lin_clf.fit(I, C)
 
 
 	#repeat above steps for test set, except not fitting data and use IDs instead
@@ -55,7 +60,10 @@ def main(train):
 				INGR[i].append(0)
 
 	#instead of fitting, put the ingredient array into predict to get prediction
-	result = clf.predict(INGR)
+	#result = clf.predict(INGR)
+
+	#instead of using clf, use linearclf to predict
+	result = lin_clf.predict(INGR)
 
 	#write results
 	f = open("svm.csv", "w")
